@@ -1,0 +1,3 @@
+<h1><%= t ".title" %></h1>
+<p><%= t ".description" %></p>
+<%= link_to t(".link_des"), edit_account_activation_url(I18n.locale, nil, token: @user.activation_token, email: @user.email)%>

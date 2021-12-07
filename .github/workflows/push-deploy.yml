@@ -1,0 +1,77 @@
+name: PublishAndDeploy
+
+on:
+  push:
+    branches:
+      - "master"
+
+env:
+  # TODO: Change variable to your image's name.
+  IMAGE_NAME: 3s-api
+  REPOSITORY_OWNER: vuduc211299
+
+jobs:
+  push_image:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    outputs:
+      REGISTRY_IMAGE: ${{ steps.env.outputs.REGISTRY_IMAGE }}
+      TAG: ${{ steps.env.outputs.TAG }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set env
+        run: |
+          echo "TAG=$(echo $(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')-${{ github.sha }})" >> $GITHUB_ENV
+          echo "REGISTRY_IMAGE=$(echo "ghcr.io/${{ env.REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}")" >> $GITHUB_ENV
+
+      - name: Build image
+        run: |
+          docker pull $REGISTRY_IMAGE:latest || true
+          docker build --cache-from $REGISTRY_IMAGE:latest --tag $REGISTRY_IMAGE:$TAG .
+
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ env.REPOSITORY_OWNER }} --password-stdin
+
+      - name: Push image to GitHub Container Registry
+        run: |
+          echo REGISTRY_IMAGE=$REGISTRY_IMAGE
+          echo TAG=$TAG
+          docker push $REGISTRY_IMAGE:$TAG
+
+      - name: Tag latest image
+        run: |
+          docker tag $REGISTRY_IMAGE:$TAG $REGISTRY_IMAGE:latest
+          docker push $REGISTRY_IMAGE:latest
+      - name: Set output
+        id: env
+        run: |
+          echo "::set-output name=REGISTRY_IMAGE::$(echo ${REGISTRY_IMAGE})"
+          echo "::set-output name=TAG::$(echo ${TAG})"
+  deploy:
+     runs-on: ubuntu-latest
+     needs: push_image
+     if: github.event_name == 'push'
+
+     steps:
+      - uses: actions/checkout@v2
+
+      - name: Install doctl
+        run: cd ~ && curl -sL
+          https://github.com/digitalocean/doctl/releases/download/v1.52.0/doctl-1.52.0-linux-amd64.tar.gz | tar -xzv
+      - name: DigitalOcean auth
+        run: ~/doctl auth init -t ${{secrets.DIGITALOCEAN_TOKEN}}
+      - name: Set Kubeconfig
+        run: ~/doctl kubernetes cluster kubeconfig save ${{secrets.CLUSTER_NAME}}
+      - name: Get Kubeconfig
+        run: cat ~/.kube/config
+      - name: Set Image Tag
+        run: sed -i 's|GITHUB_SHA|${{ needs.push_image.outputs.TAG }}|' ./k8s/base/deployment.yml
+      - name: Check yaml file
+        run: grep -E "image" ./k8s/base/deployment.yml
+      - name: Apply yaml file
+        run: kubectl apply -f ./k8s/base/deployment.yml --record
+      - name: Check result
+        run: kubectl get all

@@ -1,0 +1,27 @@
+validations:
+  user:
+    email:
+      regex: !ruby/regexp /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+      max_length: 255
+    password:
+      min_length: 6
+      max_length: 50
+    name:
+      min_length: 6
+      max_length: 50
+    address:
+      max_length: 100
+  place:
+    minimum_of_overviews: 8
+    min_length_of_name: 6
+    max_length_of_name: 50
+    max_length_of_details: 10000
+    min_normal_price: 0
+    min_weekend_price: 0
+    min_people: 1
+    max_length: 500
+expire_token_time: 1
+enum:
+  booking:
+    status:
+      incomplete: 4

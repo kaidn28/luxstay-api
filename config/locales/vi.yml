@@ -1,0 +1,19 @@
+vi:
+  messages:
+    warning:
+      activate_account: "Kiểm tra email của bạn để kích hoạt tài khoản"
+    errors:
+      incorrect_password: "Email hoặc mật khẩu không đúng"
+      invalid_phone_number: "Số điện thoại không hợp lệ"
+      user_not_found: "Không tìm thấy user"
+      update: "Cập nhật không thành công"
+    success:
+      login: "Đăng nhập thành công"
+      user:
+        updated: "Cập nhật thông tin ngừoi dùng thành công"
+  user_mailer:
+    account_activation:
+      mail_subject: "Kích hoạt tài khoản 3S"
+      title: "Email kích hoạt tài khoản"
+      description: "Hãy ấn link phía dưới để kích hoạt tài khoản"
+      link_des: "Link kích hoạt"

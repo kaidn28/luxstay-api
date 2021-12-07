@@ -1,0 +1,24 @@
+en:
+  messages:
+    warning:
+      activate_account: "Please check your email to activate your account"
+    errors:
+      email_not_found: "email not found"
+      incorrect_password: "password are not correct"
+      invalid_phone_number: "Phone number is invalid"
+      user_not_found: "User not found"
+      update: "Update failed"
+    success:
+      login: "Login success"
+      booking: "Booking success"
+      place:
+        create: "Create place successfully"
+        requested: "Place'status has been updated"
+      user:
+        updated: "User has been updated successfully"
+  user_mailer:
+    account_activation:
+      mail_subject: "3S Account activation"
+      title: "Account activation email"
+      description: "Please click the link below to verify your account"
+      link_des: "Account verification link"

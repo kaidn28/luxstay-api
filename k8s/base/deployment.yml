@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sans-api
+spec:
+  selector:
+    matchLabels:
+      app: sans-api
+  template:
+    metadata:
+      labels:
+        app: sans-api
+    spec:
+      containers:
+        - name: sans-api-image
+          image: ghcr.io/vuduc211299/3s-api:GITHUB_SHA
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '250m'
+            limits:
+              memory: '2Gi'
+              cpu: "2500m"
+          env:
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: DATABASE_USERNAME
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: DATABASE_HOST
+            - name: HOST
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: HOST
+            - name: MAIL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: MAIL_HOST
+            - name: MAIL_USER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: MAIL_USER_NAME
+            - name: MAIL_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: MAIL_USER_PASSWORD
+            - name: MAIL_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: MAIL_ADDRESS
+            - name: MAIL_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: MAIL_DOMAIN
+            - name: MAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: MAIL_PORT
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: SECRET_KEY
+            - name: JWT_ALGORITHM
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: JWT_ALGORITHM
+            - name: ACTIVATION_URL
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: ACTIVATION_URL
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: sans-api-secret
+                  key: SECRET_KEY_BASE

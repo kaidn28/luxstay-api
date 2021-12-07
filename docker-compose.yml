@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  web:
+    container_name: 3s-api
+    build: .
+    image: 3s-api
+    volumes:
+      - .:/usr/src/3s-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+
