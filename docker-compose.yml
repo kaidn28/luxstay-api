@@ -1,13 +1,26 @@
 version: "3.8"
 services:
-  web:
-    container_name: 3s-api
-    build: .
-    image: 3s-api
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
     volumes:
-      - .:/usr/src/3s-api
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+  web:
+    container_name: luxstay-api
+    build: .
+    image: luxstay-api
+    volumes:
+      - .:/usr/src/luxstay-api
     ports:
       - "3000:3000"
     env_file:
       - ./.env
-
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    depends_on: 
+      - db

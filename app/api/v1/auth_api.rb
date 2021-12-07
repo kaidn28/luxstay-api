@@ -6,7 +6,7 @@ class AuthApi < ApiV1
       optional :gender, type: Symbol, values: [:male, :female, :other]
       requires :email, type: String, message: I18n.t("messages.errors.required")
       requires :phone, type: String,
-        regexp: {value: /(09|01[2|6|8|9])+([0-9]{8})\b/, message: I18n.t("messages.errors.invalid_phone_number")}
+        regexp: {value: /(09|01[2|3|6|8|9])+([0-9]{8})\b/, message: I18n.t("messages.errors.invalid_phone_number")}
       requires :password, type: String, message: I18n.t("messages.errors.required")
       requires :password_confirmation, type: String, same_as: :password, message: I18n.t("messages.errors.required")
     end
@@ -14,7 +14,8 @@ class AuthApi < ApiV1
       data = valid_params(params, User::SIGN_UP_PARAMS)
       user = User.create data
       if user.valid?
-        user.send_activation_email
+        user.save
+        # user.send_activation_email
         return render_success_response(:ok, MessageFormat, {user: user}, I18n.t("messages.warning.activate_account"))
       end
 
@@ -31,9 +32,9 @@ class AuthApi < ApiV1
 
       error!(I18n.t("messages.errors.email_not_found"), :bad_request) unless @user
 
-      unless @user.activated?
-        return render_success_response(:ok, MessageFormat, {user: @user}, I18n.t("messages.warning.activate_account"))
-      end
+      # unless @user.activated?
+      #   return render_success_response(:ok, MessageFormat, {user: @user}, I18n.t("messages.warning.activate_account"))
+      # end
 
       if @user&.authenticate params[:password]
         token = encode_token({user_id: @user.id})

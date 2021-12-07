@@ -39,7 +39,7 @@ class User < ApplicationRecord
   has_secure_password
 
   def send_activation_email
-    UserMailer.account_activation(self).deliver_now
+    # UserMailer.account_activation(self).deliver_now
   end
 
   def activate

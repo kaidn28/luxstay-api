@@ -1,9 +1,8 @@
 FROM ruby:2.7.0
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs && gem install bundler
-RUN mkdir -p /usr/src/3s-api
-WORKDIR /usr/src/3s-api
+RUN mkdir -p /usr/src/luxstay-api
+WORKDIR /usr/src/luxstay-api
 COPY Gemfile /Gemfile
-COPY Gemfile.lock ./Gemfile.lock
 RUN bundle install
 COPY . .
 
