@@ -133,10 +133,10 @@ roomData.each do |rd|
         cooking: 2, 
         party: 3
     }
-    room_attributes = {square: rd["area"],
-                        num_of_bedroom: rd["num_bedrooms"],
-                        num_of_bed: rd["num_beds"],
-                        num_of_bathroom: rd["num_bathrooms"],
+    room_attributes = {square: rd["area"]? rd["area"] : 25,
+                        num_of_bedroom: rd["num_bedrooms"]? rd["num_bedrooms"] : 1,
+                        num_of_bed: rd["num_beds"]? rd["num_beds"] : 1,
+                        num_of_bathroom: rd["num_bathrooms"]? rd["num_bathrooms"] : 1,
                         num_of_kitchen: 1
     }
     schedule_price_attributes = {normal_day_price: rd["price"]["nightly_price"],

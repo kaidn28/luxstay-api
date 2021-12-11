@@ -4,5 +4,6 @@ class Base < Grape::API
   helpers ParamHelper
   helpers UserHelper
   helpers RecommenderHelper
+  helpers PlaceHelper
   mount ApiV1
 end
