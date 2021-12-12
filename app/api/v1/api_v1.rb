@@ -9,4 +9,5 @@ class ApiV1 < Grape::API
   mount PlaceApi
   mount BookmarkApi
   mount CouponApi
+  mount RecommenderApi
 end
