@@ -256,5 +256,129 @@ class PlaceApi < ApiV1
       end
       return render_success_response(:ok, RatingResFormat, {data: results}, "success")
     end
+
+    desc "Search a place by name or address"
+
+    params do
+      requires :page, type: Integer
+      requires :search, type: String
+    end
+
+    get "/search/:search/:page" do
+      results = []
+      page = params[:page] - 1
+      search = "%#{params[:search].downcase}%"
+
+      places = Place.where("lower(name) like ? or lower(address) like ?", search, search)
+
+      count = places.count if places
+
+      places = places.limit(20).offset(page * 20)
+
+      places.each do |place|
+        result = {}
+        result[:name] = place.name
+        result[:id] = place.id
+        result[:details] = place.details
+        result[:image] = place.image
+        result[:host] = User.find_by id: place.user_id
+        result[:address] = place.address
+        result[:place_type] = place.place_type
+        facility = []
+        PlaceFacility.where(place_id: place.id).each do |f|
+          facility << Facility.find_by(id: f.facility_id).name
+        end
+        result[:place_facilities_attributes] = facility
+        result[:schedule_price_attributes] = place.schedule_price
+        result[:room_attributes] = place.room
+        result[:policy_attributes] = place.policy
+        result[:rule_attributes] = place.rule
+        result[:ratings] = place.ratings
+        result[:overviews_attributes] = place.overviews
+
+        results << result
+      end
+
+      return render_success_response(:ok, PlaceSearchFormat, {data: results, count: count}, message: "Get place successfully") if places
+
+      error!(places.errors.full_messages[0], :bad_request)
+    end
+
+    desc "Filter a place by price or facilities"
+
+    params do
+      requires :page, type: Integer
+      optional :min_price, type: Float
+      optional :max_price, type: Float
+      optional :num_of_bed, type: Integer
+      optional :num_of_bedroom, type: Integer
+      optional :num_of_bathroom, type: Integer
+    end
+
+    get "/filter/:page" do
+      results = []
+      page = params[:page] - 1
+
+      min_price = params[:min_price]
+      max_price = params[:max_price]
+      num_of_bed = params[:num_of_bed]
+      num_of_bedroom = params[:num_of_bedroom]
+      num_of_bathroom = params[:num_of_bathroom]
+
+      places = Place.eager_load(:schedule_price)
+                    .where(schedule_prices: { normal_day_price: min_price..max_price })
+                    .references(:schedule_prices)
+                    .eager_load(:room)
+
+      if num_of_bed
+        places = places.eager_load(:room)
+              .where(rooms: { num_of_bed: num_of_bed })
+              .references(:rooms)
+      end
+      
+      if num_of_bedroom
+        places = places.eager_load(:room)
+              .where(rooms: { num_of_bedroom: num_of_bedroom })
+              .references(:rooms)
+      end
+
+      if num_of_bathroom
+        places = places.eager_load(:room)
+              .where(rooms: { num_of_bathroom: num_of_bathroom })
+              .references(:rooms)
+      end
+
+      count = places.count if places
+
+      places = places.limit(20).offset(page * 20)
+
+      places.each do |place|
+        result = {}
+        result[:name] = place.name
+        result[:id] = place.id
+        result[:details] = place.details
+        result[:image] = place.image
+        result[:host] = User.find_by id: place.user_id
+        result[:address] = place.address
+        result[:place_type] = place.place_type
+        facility = []
+        PlaceFacility.where(place_id: place.id).each do |f|
+          facility << Facility.find_by(id: f.facility_id).name
+        end
+        result[:place_facilities_attributes] = facility
+        result[:schedule_price_attributes] = place.schedule_price
+        result[:room_attributes] = place.room
+        result[:policy_attributes] = place.policy
+        result[:rule_attributes] = place.rule
+        result[:ratings] = place.ratings
+        result[:overviews_attributes] = place.overviews
+
+        results << result
+      end
+
+      return render_success_response(:ok, PlaceSearchFormat, {data: results, count: count}, message: "Get place successfully") if places
+
+      error!(places.errors.full_messages[0], :bad_request)
+    end
   end
 end
