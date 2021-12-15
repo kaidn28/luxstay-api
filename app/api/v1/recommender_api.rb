@@ -53,7 +53,7 @@ class RecommenderApi < ApiV1
                     end
                 else 
                     places = Place.where(city: params[:city]).sample(100)
-                    meanVAW = getMeanVAWLow(fPlaces)
+                    meanVAW = getMeanVAWHigh(fPlaces)
                     scores = []
                     
                     places.each do |place|
@@ -106,13 +106,13 @@ class RecommenderApi < ApiV1
             scores = []          
             places.each do |place|
                 in_favor = false
-                if place.id == params[:id]
-                    in_favor = true
-                end
-                fPlaces_id.each do |fp|
-                    if place.id == fp
+                fPlaces_id.each do |p|
+                    if place.id == p 
                         in_favor = true
                     end
+                end 
+                if place.id == target_place.id
+                    in_favor = true
                 end
                 if !in_favor
                     vector = vectorizePlace(place)
@@ -131,6 +131,28 @@ class RecommenderApi < ApiV1
             return render_success_response(:ok, RecResFormat, {data: results}, I18n.t("Request successful")) if results
 
             error!(I18n.t("Request failed"), :bad_request)
+        end
+
+        desc "user-user collaborative filtering"
+        params do 
+            requires :city, type: String
+            optional :num_rec, type: Integer, default: 10
+        end
+        get "/cf/city/:city" do
+            results = collaborativeFiltering(params[:city], params[:num_rec])
+            return render_success_response(:ok, RecResFormat, {data: results}, I18n.t("Request successful")) if results
+
+            error!(I18n.t("Request failed"), :bad_request)
+        end 
+
+        desc "content based recommender on specific room"
+        params do 
+            requires :place_id, type: Integer
+            optional :num_rec, type: Integer, default: 10
+        end
+
+        get "/cf/:place_id" do
+            
         end
     end
 end 
