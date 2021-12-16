@@ -120,7 +120,7 @@ module RecommenderHelper
     end 
 
     def collaborativeFiltering(city, num_rec)
-        users = User.select('users.*').joins(:favorites).group("users.id").having('count(favorites.id)>1').to_a
+        users = User.select('users.*').joins(:favorites).group("users.id").having('count(favorites.id)>0').to_a
         places = Place.where(city: city)
         #create user-place bookmark matrix
         up_mat = Matrix.zero(users.size, places.size)
