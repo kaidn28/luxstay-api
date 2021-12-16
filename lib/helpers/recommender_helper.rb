@@ -180,4 +180,43 @@ module RecommenderHelper
         
         return rec_places
     end
+    
+    def contentBasedRecommender (place_id, num_rec)
+        target_place = Place.find_by id: place_id
+        favors = current_user.favorites.map{|f| f.place_id}
+        places = Place.where(city: target_place.city).where.not(id: [place_id]+favors).sample(50)
+        p_idx_map = []
+        target_vector = vectorizePlace(target_place)
+        data_mat = target_vector.to_matrix.transpose
+        places.each.with_index do |place, idx|
+            vector = vectorizePlace(place)
+            mat = vector.to_matrix.transpose
+            data_mat = Matrix.vstack(data_mat, mat) 
+            p_idx_map << [idx, place.id] 
+        end
+        p_idx_map = p_idx_map.to_h
+        data_mat
+        zero_handle_mat = Matrix.build(data_mat.row_count, data_mat.column_count) \
+            {
+                |r,c|
+                    0.0001
+            }
+        normalized_mat = Matrix.build(data_mat.row_count, data_mat.column_count) \
+            {
+                |r,c|
+                    (data_mat+zero_handle_mat).column(c).normalize[r]
+                
+            }
+        sim_vector = createSimilarityVector(normalized_mat, 0)
+        sim_array = sim_vector[1..].to_a
+        sim_array = sim_array.map.with_index{|s, idx| [s,idx]}.sort_by{|item| item[0]}.reverse
+        results = []
+        sim_array[..(num_rec-1)].each do |item|
+            place_id = p_idx_map[item[1]]
+            place = Place.find_by id: place_id
+            confidence = item[0]
+            results << formatPlace(place, confidence: confidence)
+        end
+        return results
+    end 
 end
