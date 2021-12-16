@@ -307,6 +307,7 @@ class PlaceApi < ApiV1
     desc "Filter a place by price or facilities"
 
     params do
+      requires :city, type: Symbol, values: [:hanoi, :hcm, :danang, :nhatrang, :dalat, :quangninh, :hoian, :vungtau]
       requires :page, type: Integer
       optional :min_price, type: Float
       optional :max_price, type: Float
@@ -315,7 +316,7 @@ class PlaceApi < ApiV1
       optional :num_of_bathroom, type: Integer
     end
 
-    get "/filter/:page" do
+    get "/filter/:city/:page" do
       results = []
       page = params[:page] - 1
 
@@ -325,7 +326,8 @@ class PlaceApi < ApiV1
       num_of_bedroom = params[:num_of_bedroom]
       num_of_bathroom = params[:num_of_bathroom]
 
-      places = Place.eager_load(:schedule_price)
+      places = Place.where(city: params[:city])
+                    .eager_load(:schedule_price)
                     .where(schedule_prices: { normal_day_price: min_price..max_price })
                     .references(:schedule_prices)
                     .eager_load(:room)
