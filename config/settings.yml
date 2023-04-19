@@ -12,7 +12,7 @@ validations:
     address:
       max_length: 100
   place:
-    minimum_of_overviews: 8
+    minimum_of_overviews: 0
     min_length_of_name: 6
     max_length_of_name: 50
     max_length_of_details: 10000

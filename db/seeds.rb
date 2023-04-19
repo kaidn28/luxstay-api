@@ -37,6 +37,7 @@ User.create!(
   )
 end
 
+
 #Create facilities
 
 Facility.create!(name: "Wifi")
@@ -66,7 +67,7 @@ cities = [1,2,3,4,5,6,7,8]
 cancel_policies = [1, 2, 3]
 # // rating_score = [1, 2, 3, 4, 5]
 # // positive_number = Faker::Number.between(from: 1, to: 10)
-
+=begin
 images = ["https://cdn.luxstay.com/rooms/21289/large/room_21289_50_1557240288.jpg",
         "https://cdn.luxstay.com/rooms/35959/large/971CE3AB-879A-4F79-BF12-7190D2D30FEF.jpg",
         "https://cdn.luxstay.com/rooms/29288/large/room_29288_213_1565167160.jpg",
@@ -108,6 +109,10 @@ images = ["https://cdn.luxstay.com/rooms/21289/large/room_21289_50_1557240288.jp
         "https://cdn.luxstay.com/rooms/36906/large/room_36906_1_1573752192.jpg",
         "https://cdn.luxstay.com/rooms/30529/large/room_30529_3_1566474077.jpg"
 ]
+
+
+images = ["https://picsum.photos/200/300"]
+
 require 'json'
 data = File.read('./roomDataset.json')
 roomData = JSON.parse(data)
@@ -166,3 +171,4 @@ roomData.each do |rd|
         place_facilities_attributes: place_facilities_attributes
     )
 end
+=end

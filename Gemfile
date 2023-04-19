@@ -4,6 +4,9 @@ git_source(:github){|repo| "https://github.com/#{repo}.git"}
 ruby "2.7.0"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+# This must be the first gem listed
+gem 'appmap', group: %i[test development]
+
 gem "rails", "~> 6.0.3", ">= 6.0.3.3"
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -14,6 +17,7 @@ gem "bootsnap", "1.4.8", require: false
 gem "config", "2.2.1"
 gem "devise"
 gem "dotenv-rails"
+gem 'dry-container', '~> 0.8.0'
 gem "dry-core", "0.4.9"
 gem "dry-initializer", "3.0.3"
 gem "dry-logic", "1.0.7"
@@ -35,6 +39,7 @@ gem "puma", "4.3.6"
 gem "rack-cors"
 gem "redis", "4.2.2"
 gem "regexp_parser", "1.8.0"
+gem "rswag"
 gem "sidekiq"
 gem "tzinfo", "1.2.7"
 gem "zeitwerk", "2.4.0"
@@ -44,6 +49,8 @@ gem "zeitwerk", "2.4.0"
 
 group :development, :test do
   gem "pry-rails"
+  gem "rspec-rails"
+  gem "rswag-specs"
 end
 
 group :development do

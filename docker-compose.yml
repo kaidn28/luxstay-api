@@ -2,8 +2,6 @@ version: "3.8"
 services:
   db:
     image: postgres
-    ports:
-      - "5432:5432"
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
     environment:
@@ -22,5 +20,5 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-    depends_on: 
+    depends_on:
       - db

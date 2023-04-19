@@ -1,0 +1,6 @@
+name: luxstay-api
+packages:
+  - path: app/api
+  - path: lib
+language: ruby
+appmap_dir: tmp/appmap

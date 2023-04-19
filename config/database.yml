@@ -19,15 +19,15 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
-  host: <%= ENV["DATABASE_HOST"] %>
-  username: <%= ENV['DATABASE_USERNAME'] %> 
-  password: <%= ENV['DATABASE_PASSWORD'] %> 
+  host: localhost
   port: 5432
+  username: khangneko
+  password: kangjames23
   pool: 5
 
 development:
   <<: *default
-  database: postgres
+  database: luxstay_dev
 
   # Schema search path. The server defaults to $user,public
   #schema_search_path: myapp,sharedapp,public
@@ -43,7 +43,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: postgres_test
+  database: luxstay_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -66,4 +66,4 @@ test:
 #
 production:
   <<: *default
-  database: postgres_production
+  database: luxstay_production

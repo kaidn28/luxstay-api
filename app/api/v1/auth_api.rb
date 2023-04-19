@@ -6,7 +6,7 @@ class AuthApi < ApiV1
       optional :gender, type: Symbol, values: [:male, :female, :other]
       requires :email, type: String, message: I18n.t("messages.errors.required")
       requires :phone, type: String,
-        regexp: {value: /(09|01[2|3|6|8|9])+([0-9]{8})\b/, message: I18n.t("messages.errors.invalid_phone_number")}
+        regexp: {value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/, message: I18n.t("messages.errors.invalid_phone_number")}
       requires :password, type: String, message: I18n.t("messages.errors.required")
       requires :password_confirmation, type: String, same_as: :password, message: I18n.t("messages.errors.required")
     end
